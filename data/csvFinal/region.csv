@@ -1,0 +1,306 @@
+AK,Anchorage
+AL,Birmingham
+AL,Dothan
+AL,Huntsville
+AL,Mobile
+AL,Montgomery
+AL,Tuscaloosa
+AR,Fort Smith
+AR,Jonesboro
+AR,Little Rock
+AR,Springdale
+AR,Texarkana
+AZ,Mesa
+AZ,Phoenix
+AZ,Sun City
+AZ,Tucson
+CA,Alameda County
+CA,Bakersfield
+CA,Chico
+CA,Contra Costa County
+CA,Fresno
+CA,Los Angeles
+CA,Modesto
+CA,Napa
+CA,Orange County
+CA,Palm Springs/Rancho M
+CA,Redding
+CA,Sacramento
+CA,Salinas
+CA,San Bernardino
+CA,San Diego
+CA,San Francisco
+CA,San Jose
+CA,San Luis Obispo
+CA,San Mateo County
+CA,Santa Barbara
+CA,Santa Cruz
+CA,Santa Rosa
+CA,Stockton
+CA,Ventura
+CO,Boulder
+CO,Colorado Springs
+CO,Denver
+CO,Fort Collins
+CO,Grand Junction
+CO,Greeley
+CO,Pueblo
+CT,Bridgeport
+CT,Hartford
+CT,New Haven
+DC,Washington
+DE,Wilmington
+FL,Bradenton
+FL,Clearwater
+FL,Fort Lauderdale
+FL,Fort Myers
+FL,Gainesville
+FL,Hudson
+FL,Jacksonville
+FL,Lakeland
+FL,Miami
+FL,Ocala
+FL,Orlando
+FL,Ormond Beach
+FL,Panama City
+FL,Pensacola
+FL,Sarasota
+FL,St. Petersburg
+FL,Tallahassee
+FL,Tampa
+GA,Albany
+GA,Atlanta
+GA,Augusta
+GA,Columbus
+GA,Macon
+GA,Rome
+GA,Savannah
+HI,Honolulu
+IA,Cedar Rapids
+IA,Davenport
+IA,Des Moines
+IA,Dubuque
+IA,Iowa City
+IA,Mason City
+IA,Sioux City
+IA,Waterloo
+ID,Boise
+ID,Idaho Falls
+IL,Aurora
+IL,Bloomington
+IL,Blue Island
+IL,Chicago
+IL,Elgin
+IL,Evanston
+IL,Hinsdale
+IL,Joliet
+IL,Melrose Park
+IL,Peoria
+IL,Rockford
+IL,Springfield
+IL,Urbana
+IN,Evansville
+IN,Fort Wayne
+IN,Gary
+IN,Indianapolis
+IN,Lafayette
+IN,Muncie
+IN,Munster
+IN,South Bend
+IN,Terre Haute
+KS,Topeka
+KS,Wichita
+KY,Covington
+KY,Lexington
+KY,Louisville
+KY,Owensboro
+KY,Paducah
+LA,Alexandria
+LA,Baton Rouge
+LA,Houma
+LA,Lafayette
+LA,Lake Charles
+LA,Metairie
+LA,Monroe
+LA,New Orleans
+LA,Shreveport
+LA,Slidell
+MA,Boston
+MA,Springfield
+MA,Worcester
+MD,Baltimore
+MD,Salisbury
+MD,Takoma Park
+ME,Bangor
+ME,Portland
+MI,Ann Arbor
+MI,Dearborn
+MI,Detroit
+MI,Flint
+MI,Grand Rapids
+MI,Kalamazoo
+MI,Lansing
+MI,Marquette
+MI,Muskegon
+MI,Petoskey
+MI,Pontiac
+MI,Royal Oak
+MI,Saginaw
+MI,St. Joseph
+MI,Traverse City
+MN,Duluth
+MN,Minneapolis
+MN,Rochester
+MN,St. Cloud
+MN,St. Paul
+MO,Cape Girardeau
+MO,Columbia
+MO,Joplin
+MO,Kansas City
+MO,Springfield
+MO,St. Louis
+MS,Gulfport
+MS,Hattiesburg
+MS,Jackson
+MS,Meridian
+MS,Oxford
+MS,Tupelo
+MT,Billings
+MT,Great Falls
+MT,Missoula
+NC,Asheville
+NC,Charlotte
+NC,Durham
+NC,Greensboro
+NC,Greenville
+NC,Hickory
+NC,Raleigh
+NC,Wilmington
+NC,Winston-Salem
+ND,Bismarck
+ND,Fargo/Moorhead MN
+ND,Grand Forks
+ND,Minot
+NE,Lincoln
+NE,Omaha
+NH,Lebanon
+NH,Manchester
+NJ,Camden
+NJ,Hackensack
+NJ,Morristown
+NJ,New Brunswick
+NJ,Newark
+NJ,Paterson
+NJ,Ridgewood
+NM,Albuquerque
+NV,Las Vegas
+NV,Reno
+NY,Albany
+NY,Binghamton
+NY,Bronx
+NY,Buffalo
+NY,East Long Island
+NY,Elmira
+NY,Manhattan
+NY,Rochester
+NY,Syracuse
+NY,White Plains
+OH,Akron
+OH,Canton
+OH,Cincinnati
+OH,Cleveland
+OH,Columbus
+OH,Dayton
+OH,Elyria
+OH,Kettering
+OH,Toledo
+OH,Youngstown
+OK,Lawton
+OK,Oklahoma City
+OK,Tulsa
+OR,Bend
+OR,Eugene
+OR,Medford
+OR,Portland
+OR,Salem
+PA,Allentown
+PA,Altoona
+PA,Danville
+PA,Erie
+PA,Harrisburg
+PA,Johnstown
+PA,Lancaster
+PA,Philadelphia
+PA,Pittsburgh
+PA,Reading
+PA,Sayre
+PA,Scranton
+PA,Wilkes-Barre
+PA,York
+RI,Providence
+SC,Charleston
+SC,Columbia
+SC,Florence
+SC,Greenville
+SC,Spartanburg
+SD,Rapid City
+SD,Sioux Falls
+TN,Chattanooga
+TN,Jackson
+TN,Johnson City
+TN,Kingsport
+TN,Knoxville
+TN,Memphis
+TN,Nashville
+TX,Abilene
+TX,Amarillo
+TX,Austin
+TX,Beaumont
+TX,Bryan
+TX,Corpus Christi
+TX,Dallas
+TX,El Paso
+TX,Fort Worth
+TX,Harlingen
+TX,Houston
+TX,Longview
+TX,Lubbock
+TX,McAllen
+TX,Odessa
+TX,San Angelo
+TX,San Antonio
+TX,Temple
+TX,Tyler
+TX,Victoria
+TX,Waco
+TX,Wichita Falls
+UT,Ogden
+UT,Provo
+UT,Salt Lake City
+VA,Arlington
+VA,Charlottesville
+VA,Lynchburg
+VA,Newport News
+VA,Norfolk
+VA,Richmond
+VA,Roanoke
+VA,Winchester
+VT,Burlington
+WA,Everett
+WA,Olympia
+WA,Seattle
+WA,Spokane
+WA,Tacoma
+WA,Yakima
+WI,Appleton
+WI,Green Bay
+WI,La Crosse
+WI,Madison
+WI,Marshfield
+WI,Milwaukee
+WI,Neenah
+WI,Wausau
+WV,Charleston
+WV,Huntington
+WV,Morgantown
+WY,Casper
