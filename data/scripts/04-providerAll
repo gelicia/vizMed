@@ -1,16 +1,21 @@
 require 'mysql'
 require 'csv'
 
+i = 0
+
 ##first, read the CSV of states and loop through each state
 CSV.foreach("../national/DRG-All.csv", {:headers=>:first_row}) do |stateRow|
 	state = stateRow[0]
-	puts state
 
 	##second, go into the directory for that state and get the DRG-All.csv for it, and then loop through the cities
 	CSV.foreach("../national/" + state + "/DRG-All.csv", {:headers=>:first_row}) do |cityRow|
 		city = cityRow[0]
 
 		##thirdly, loop through the providers in that city, then provide a breakdown of DRGs in that provider
+		CSV.foreach("../national/" + state + "/" + city + "/DRG-All.csv", {:headers=>:first_row}) do |provRow|
+			providerID = provRow[1]
+			
 
+		end
 	end
 end

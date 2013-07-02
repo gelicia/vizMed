@@ -15,7 +15,7 @@ CSV.foreach("../national/DRG-All.csv", {:headers=>:first_row}) do |row|
 
 	con = Mysql.new 'localhost', 'root', 'root', 'hospital'
 
-	rs = con.query 'SELECT p.city, ROUND(avg(i.averageCoveredCharges)) averageCoveredCharges, ROUND(avg(i.averagePayments)) averagePayments
+	rs = con.query 'SELECT REPLACE(p.city, \',\', \'\') city, ROUND(avg(i.averageCoveredCharges)) averageCoveredCharges, ROUND(avg(i.averagePayments)) averagePayments
 	FROM provider p
 	INNER JOIN inpatient i ON i.providerID = p.id
 	WHERE p.state = \'' + state + '\'
