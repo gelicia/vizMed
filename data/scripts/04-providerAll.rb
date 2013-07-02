@@ -1,8 +1,6 @@
 require 'mysql'
 require 'csv'
 
-i = 0
-
 ##first, read the CSV of states and loop through each state
 CSV.foreach("../national/DRG-All.csv", {:headers=>:first_row}) do |stateRow|
 	state = stateRow[0]
