@@ -34,7 +34,7 @@ CSV.foreach("../national/DRG-All.csv", {:headers=>:first_row}) do |stateRow|
 		##iterate through each diagnosis
 		diagArray.each { 
 			|diagCode|
-##stopped in ohio, resume there
+
 			##create a file for that city's DRG data
 			config_path = File.expand_path("../../national/" + state + "/" + city + "/DRG-" + diagCode + ".csv", __FILE__)
 			outfile = File.open(config_path, 'w')
