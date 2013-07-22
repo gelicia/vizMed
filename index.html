@@ -1,0 +1,36 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />   
+    <title>Visualizing Hospital Price Data</title> 
+
+  <!-- 
+  CSS and HTML Template by miss monorom http://www.intensivstation.ch
+  This work is licensed under a Creative Commons License http://creativecommons.org/licenses/by/1.0/
+  -->
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="js/lib/jquery-2.0.3.min.js"></script>
+    <script src="js/lib/d3.v3.min.js"></script>
+    <script type = "text/javascript" src="js/main.js"></script>
+
+    <script type="text/javascript">
+      $( document ).ready(function() {
+        loadData();
+      });
+    </script>
+  </head> 
+
+  <body>
+    <h1>Visualizing Hospital Price Data</h1>
+    <div id="left"></div>
+    <div id="right"></div>
+    <div id="content">
+      <p>This visualization allows you to explore what provider charges what amount of money to medicare for an average of all diagnosis and individual diagnoses. The yellow bar is the average. Hover over a bar for the totals.</p>
+      <p>When All DRGs is selected, it is averaging all of them together. Every bar is an average of all providers in that state or city. When All DRGs is selected, you can drill down to see the list of diagnosises that provider has with the cost. </p>
+
+      <svg id="chartMain"></svg>
+    </div>
+  </body>
+</html>

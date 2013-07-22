@@ -1,0 +1,411 @@
+         
+// var dataAll = tributary.data.data;
+// var pathArr = []; 
+// var levelData = getLevelData(dataAll, pathArr);
+                       
+// var barWidth =20;
+// //this margin isnt really a margin anymore, fix
+// var margin = {t: 50, b: 50, l: 140, r: 50};
+// var svgWidth = 1000;
+// var barSpacing = 2;
+// var width = 300;
+// var height = ((barWidth + barSpacing) * levelData.length) - barSpacing;
+                       
+// var domain = d3.extent(levelData, function(d){return d.value});
+     
+
+     
+// g.selectAll("rect")
+// .data(levelData)
+//   .enter()   
+//   .append("rect") 
+//   .attr({  
+//     y: function(d, i){ return i * (barWidth + barSpacing);},
+//     width: function(d){return x(d.value)},
+//     height : barWidth,
+//     opacity: 0.5,
+//     'id' : function(d,i){return 'barID' + i;},
+//     'class': 'barChart'
+//   })   
+// .on('mouseover', function(){
+// 	d3.select(this)
+//    // .transition()
+//     //commented out bc it messes with drilldown
+//     // .duration(200)
+// 	.attr('opacity', 1)
+// })     
+// .on('mouseout', function(){
+// 	d3.select(this)
+//    // .transition()
+//     // .duration(200)
+// 	.attr('opacity', 0.5)
+// })
+// .on('click', function(d,i){ 
+//   if (d.details !== undefined){
+//     drillDown(d, i, domain[1], avg);
+//   }
+// });
+ 
+
+// //Breadcrumb trail
+// var trail = svg.append("text")
+// .attr({
+//   x: margin.l,
+//   y: margin.t - 10,
+//   'font-size': 14,
+//   id: 'drillPath'
+// });
+
+
+// //no on click on page load
+// trail.append('tspan')
+// .attr({//"text-decoration": "underline",
+//        "class": "drillPathSpan"})
+// .text('USA')
+// .on('click', function(){buildUp(pathArr, x);});
+  
+// //baseline
+// svg.append("line")
+// 	.attr({
+//       x1: margin.l,
+//       y1: margin.t,
+//       x2: margin.l,
+//       y2: margin.t + ((barWidth + barSpacing) * levelData.length) - barSpacing,
+//       "id" : 'baseline'
+//     })
+//     .style("stroke", "#000");
+ 
+// var avg = d3.mean(levelData, function(d){return d.value;});
+
+// //avgLine todo text
+// svg.append("line")
+// 	.attr({
+//       x1: x(avg) + margin.l,
+//       y1: margin.t  ,
+//       x2: x(avg)  + margin.l,
+//       y2: margin.t + ((barWidth + barSpacing) * levelData.length) - barSpacing,
+//       "id" : 'avgLine',
+//       'opacity': 1
+//     })
+// 	.style({
+//       stroke: "#F3AF00",
+//       'stroke-width': 3,
+//       'stroke-dasharray': ("6, 5")
+//     });
+
+// //maxLine / text
+// svg.append("line")
+// 	.attr({
+//       x1: x(domain[1]) + margin.l,
+//       y1: margin.t - 20,
+//       x2: x(domain[1])  + margin.l,
+//       y2: margin.t + ((barWidth + barSpacing) * levelData.length) - barSpacing,
+//       "id" : 'maxLine',
+//       'opacity': 1
+//     })  
+// 	.style({
+//       stroke: "#000000",
+//       'stroke-width': 1
+//     });   
+               
+// svg.append("text")
+// .attr({
+//   x: x(domain[1]) + margin.l - 3,
+//   y: margin.t - 25,
+//   'text-anchor': 'middle',
+//   'font-size': 12,
+//   'id': 'maxText',
+//   'opacity': 1
+// })    
+// .text(domain[1]);     
+ 
+//   var allSame = 300;
+//   var delay = allSame;
+//   var delayAdditive = allSame;
+//   var transitionSpeed = allSame;
+
+// function drillDown(clickedData, clickedDataIdx, prevMax, prevAvg){
+
+//   pathArr.push(clickedDataIdx);
+//   var thisPathArr = pathArr.slice(0);
+//   var newData = getLevelData(dataAll, thisPathArr);
+//   var newDomain = d3.extent(newData, function(d){return d.value});
+       
+//   var newX = d3.scale.linear()
+// 	.domain([0, newDomain[1]])
+//     .range([0, width]);  
+      
+//   //step 0 remove mouse events from bars since they are going away
+//  d3.selectAll('.barChart')
+//   .on('mouseover', null)
+//   .on('mouseout', null)  
+                
+//   //step one - rescale
+//   //the scale change is taken care of first since it's the most visually confusing
+//   //show how everything is reflected on the new scale.
+//   d3.selectAll('.barChart')
+//   .transition() 
+//   .duration(transitionSpeed)
+//   .attr('width', function(d){return newX(d.value);})
+   
+//   d3.selectAll('#maxLine')
+//   .transition() 
+//   .duration(transitionSpeed)
+//   .attr({
+//     x1: newX(prevMax) + margin.l,
+//     x2: newX(prevMax) + margin.l
+//   }) 
+  
+//     d3.selectAll('#maxText')
+//     .transition() 
+//   .duration(transitionSpeed)
+//   .attr({ 
+//     x: newX(prevMax) + margin.l
+//   })  
+         
+//    var avgLine = d3.selectAll('#avgLine');
+   
+//  avgLine.transition() 
+//   .duration(transitionSpeed)
+//   .attr({
+//     x1: newX(prevAvg) + margin.l,
+//     x2: newX(prevAvg) + margin.l
+//   })   
+            
+// //step 2 remove unnecessary elements
+// //fade all non selected and avg line
+    
+//   var notClicked = d3.selectAll('.barChart:not(#barID' + clickedDataIdx + '), #avgLine, .labels');
+      
+//   notClicked.transition()
+//     .duration(transitionSpeed)
+// 	.delay(delay)
+// 	.attr('opacity', 0)
+//     .remove(); 
+       
+//     //add avg line 
+// 	 avgLine = svg.append("line")
+// 	.attr({
+//       x1: newX(clickedData.value) + margin.l,
+//       y1: margin.t  ,
+//       x2: newX(clickedData.value)  + margin.l,
+//       y2: avgLine.attr('y2'), //Init height at whatever was needed for old bars
+//       //y2: margin.t + height ,
+//      // y2: margin.t + ((barWidth + barSpacing) * newData.length) - barSpacing,
+//       "id" : 'avgLine',
+//       'opacity': 0
+//     })   
+// 	.style({ 
+//       stroke: "#F3AF00",
+//       'stroke-width': 3,
+//       'stroke-dasharray': ("6, 5")
+//     })     
+//     .transition()
+//     .delay(delay) 
+//     .duration(transitionSpeed) 
+// 	.attr('opacity', 1);
+     
+//     delay += delayAdditive;  
+   
+// 	//after establishing new avg, fade out clicked bar
+// 	d3.select("#barID" + clickedDataIdx)
+//     .transition()
+//     .delay(delay) 
+//     .duration(transitionSpeed)
+// 	.attr('opacity', 0)
+//     .remove();
+    
+//   delay +=delayAdditive; 
+        
+//   //step 3, resize lines and add bars
+ 
+//   d3.selectAll("#baseline,#avgLine")
+//    .transition() 
+//     .delay(delay) 
+//     .duration(transitionSpeed)
+//   .attr({
+//     y2: margin.t + ((barWidth + barSpacing) * newData.length) - barSpacing
+//   }) 
+  
+//   var newBars= g.selectAll("rect .barChart")
+//   .data(newData) 
+//   .enter()
+//   .append("rect")            
+//  .attr ({ 
+//     width : 0,
+//     y: function(d, i){  return i * (barWidth + barSpacing);},
+//     height : barWidth, 
+//     opacity: 0.5,
+//     'id' : function(d, i){return 'barID' + i;},
+//     'class': 'barChart'
+//   });  
+   
+//   newBars.transition() 
+//     .delay(delay) 
+//     .duration(transitionSpeed)
+//   .attr({ 
+//     width: function(d){return newX(d.value);}
+//   });  
+  
+// //this doesn't work because when you mouseover a bar being transitioned
+// //it gets stuck at whatever size mid transition it's at
+// //it will need to be applied after the transition is complete.  
+//   newBars.on('mouseover', function(){
+// 	d3.select(this)
+//     .transition()
+//      .duration(transitionSpeed/3)
+// 	.attr('opacity', 1)
+// })    
+// .on('mouseout', function(){
+// 	d3.select(this) 
+//     .transition()
+//      .duration(transitionSpeed/3)
+// 	.attr('opacity', 0.5) 
+// })      
+// .on('click', function(d, i){
+//   if (d.details !== undefined){
+//     drillDown(d, i, newDomain[1], clickedData.value);
+//   }  
+// }) ;
+   
+//   var drillPath = d3.select('#drillPath');
+   
+//   drillPath.append('tspan')
+//   .text(' > ');
+  
+//   drillPath.append('tspan')
+//   .attr({//"text-decoration":"underline",
+//          "class": "drillPathSpan"
+//         })
+//   .text(clickedData.key)
+//   .on('click', function(){buildUp(pathArr, newX);});
+         
+//   /*var pathSpans = drillPath.selectAll('.drillPathSpan');
+  
+//   pathSpans[0][pathSpans[0].length - 2]
+//   .attr({
+// 	"text-decoration":"underline"
+//   });
+  
+//   console.log(pathSpans[0][pathSpans[0].length - 2]);
+//    */
+   
+//   svg.selectAll("#labels")
+// .data(newData)
+// .enter() 
+// .append('text')
+// .attr({ 
+//   x: margin.l - 5,
+//   y: function(d, i){return (23 * i) + margin.t + 18;},
+//   'text-anchor': 'end',
+//   'class': 'labels',
+//   'opacity': 0
+// })
+// .text(function(d){return d.key})
+//   .transition() 
+//     .delay(delay) 
+//     .duration(transitionSpeed)
+//   .attr('opacity', 1);
+     
+//   //step 4, move max to new place
+//     d3.selectAll('#maxLine')
+//     .transition()
+//     .delay(delay)
+//   .duration(transitionSpeed)
+//   .attr({ 
+//     x1: newX(newDomain[1]) + margin.l,
+//     x2: newX(newDomain[1]) + margin.l,
+//     y2: margin.t + ((barWidth + barSpacing) * newData.length) - barSpacing
+//   })     
+      
+//     var maxText = d3.selectAll('#maxText');
+ 
+//   maxText.transition() 
+//     .delay(delay)
+//     .duration(transitionSpeed)
+//     .attr({ 
+//       x: newX(newDomain[1]) + margin.l
+//     });
+    
+//   maxText
+//   .transition() 
+//     .delay(delay)
+//     .duration(transitionSpeed)
+//   .attr('x', newX(newDomain[1]) + margin.l)
+//   .tween("text", function(d) {
+//             var i = d3.interpolate(this.textContent, newDomain[1]),
+//                 prec = (newDomain[1] + "").split("."),
+//                 round = (prec.length > 1) ? Math.pow(10, prec[1].length) : 1;
+
+//             return function(t) {
+//                 this.textContent = Math.round(i(t) * round) / round;
+//             }; 
+//         });     
+//   }   
+ 
+// //levels back needs to be included.. just going to allow one back for now
+// function buildUp(thisPathArr, thisScale) {
+//   delay = 0;
+//   //go back one in path, remove last entry
+//   var backedOutElemIdx = thisPathArr.pop();
+  
+//   var newData = getLevelData(dataAll, thisPathArr);
+  
+//   //step 1 fade out all bars + labels
+//   d3.selectAll(".barChart,.labels")
+//   .transition()
+//     .duration(transitionSpeed)
+// 	.delay(delay)
+// 	.attr('opacity', 0)
+//     .remove();  
+      
+//   //step 2 resize vertically and add rollup city to avg
+//    d3.selectAll("#baseline,#avgLine,#maxLine")
+//    .transition() 
+//     .delay(delay) 
+//     .duration(transitionSpeed)
+//   .attr({
+//     y2: margin.t + ((barWidth + barSpacing) * newData.length) - barSpacing
+//   }) 
+   
+//     var newBars= g.selectAll("rect .barChart")
+//   .data(newData) 
+//   .enter()
+//   .append("rect")            
+//  .attr ({ 
+//     width : 10,
+//     y: function(d, i){  return i * (barWidth + barSpacing);},
+//     height : barWidth, 
+//     opacity: 0.5,
+//     'id' : function(d, i){return 'barID' + i;},
+//     'class': 'barChart'
+//   });     
+         
+//   console.log(d3.select("#avgLine").attr("x1") + " " + margin.l);
+  
+//   newBars.filter(function(d,i){return i === backedOutElemIdx})
+//   .attr({
+//     width: function(d){return d3.select("#avgLine").attr("x1") - margin.l;}
+//   });
+    
+   
+//   //step 3 rescale
+//   //step 4 remove avg and add all other bars
+//   //step 5 add new avg
+// } 
+              
+// //console.log(getLevelData(dataAll, [0,0]))  
+ 
+// // pathArr is an array of indexes
+// //its indexes instead of keys so spaces and characters dont throw a dom exception 12
+// function getLevelData(data, thisPathArr){
+//   if (thisPathArr.length === 0 ) {  
+//     return data;
+//   }    
+//   else {
+//     var idx = thisPathArr.shift();
+//     thisPathArr = thisPathArr === undefined? [] : thisPathArr; 
+//     return getLevelData(data[idx].details, thisPathArr);
+//   }  
+// }  
+//  t
