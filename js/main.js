@@ -3,11 +3,25 @@ var barSpec = {spacing: 2, h: 20, fill: '#5777C0', moFill: '#A2B6E5'};
 //total margin all around the sides
 var margin = {t: 20, b: 10, l: 10, r: 10};
 //range for the chart
-var chartSpec = {topMargin: 100, w: 600, label:{size: 12, color: "#000", moColor: "#474747"}};
+var chartSpec = {topMargin: 30, w: 600, label:{size: 12, color: "#000", moColor: "#474747"}};
 //todo: replace with something dynamic
 var svgTemp = {w: 1000, h: 5000};
 
 function loadData(){
+  //fill list of DRGs
+  d3.csv('./data/diagnoses.csv', function(error, csv){
+    var dropDown = d3.select('#drgSelect');
+
+    csv.unshift({code: "All", description: "All DRGs"});
+
+    dropDown.selectAll('option')
+    .data(csv).enter().append('option')
+    .attr("value", function(d){ return d.code;})
+    .text(function(d){return d.code + " - " + d.description;});
+
+  });
+
+  //draw chart, initialized to all DRGs
   var svg = d3.select("svg#chartMain");
 
   d3.csv('./data/national/DRG-All.csv', 
@@ -184,3 +198,16 @@ function buildUp(){}
     }
     return val;
   }
+
+function dropListChange(value){
+  d3.csv('./data/national/DRG-' + value + '.csv',function(error, csv){
+    console.log(csv);
+
+  });
+}
+
+function redrawNewData(newData){
+//select main svg, get all elements in that
+//this isn't to swap to new data, this is to rescale and change existing rows to new values
+//and to have a new max and avg 
+}
