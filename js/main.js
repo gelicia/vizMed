@@ -7,6 +7,9 @@ var chartSpec = {topMargin: 30, w: 600, label:{size: 12, color: "#000", moColor:
 //todo: replace with something dynamic
 var svgTemp = {w: 1000, h: 5000};
 
+//this will be referenced by functions that need to transition from the old scale to a new one
+var xScale; 
+
 function loadData(){
   //fill list of DRGs
   d3.csv('./data/diagnoses.csv', function(error, csv){
@@ -61,7 +64,7 @@ function loadData(){
       d3.selectAll("text.barLabel")
       .attr("x", chartStart - 4);
 
-      var x = d3.scale.linear()
+      xScale = d3.scale.linear()
         .domain([0, valMax])
         .range([0, chartSpec.w]);
 
@@ -78,9 +81,10 @@ function loadData(){
           x: 0,
           y: function(d,i){return i * (barSpec.h + barSpec.spacing);},
           height: barSpec.h,
-          width: function(d){return x(d.avgCoveredCharges);},
+          width: function(d){return xScale(d.avgCoveredCharges);},
           fill: barSpec.fill,
-          id: function(d, i){ return "bar" + i;}
+          id: function(d, i){ return "bar" + i;},
+          "barState": function(d){return d.state;}
         })
         .on('mouseover', function(d, i){
           d3.select("#bar" + i)
@@ -114,7 +118,7 @@ function loadData(){
 
         bars.selectAll('text.barValueLabel')
         .attr({
-          x: function (d, i) {return x(d.avgCoveredCharges) - 2;},
+          x: function (d, i) {return xScale(d.avgCoveredCharges) - 2;},
           y: function (d, i) {return (i * (barSpec.h + barSpec.spacing)) + (this.getBBox().height) + 1;}
         });
 
@@ -134,9 +138,9 @@ function loadData(){
 console.log(avg);
       bars.append("line")
       .attr({
-        x1: x(avg),
+        x1: xScale(avg),
         y1: 0  ,
-        x2: x(avg),
+        x2: xScale(avg),
         y2: (csv.length * (barSpec.h + barSpec.spacing)) - barSpec.spacing ,
         "id" : 'avgLine',
         'opacity': 1
@@ -154,7 +158,7 @@ console.log(avg);
           "text-anchor": "middle",
           id : 'avgLineLabel',
           "fill" : '#000',
-          x: x(avg),
+          x: xScale(avg),
           y: -5
         })
         .text('$' + commaSeparateNumber(Math.round(avg)));
@@ -162,9 +166,9 @@ console.log(avg);
       //max line
       bars.append("line")
       .attr({
-        x1: x(valMax),
+        x1: xScale(valMax),
         y1: 0  ,
-        x2: x(valMax),
+        x2: xScale(valMax),
         y2: (csv.length * (barSpec.h + barSpec.spacing)) - barSpec.spacing ,
         "id" : 'avgLine',
         'opacity': 1
@@ -181,7 +185,7 @@ console.log(avg);
           "text-anchor": "middle",
           id : 'maxLineLabel',
           "fill" : '#000',
-          x: x(valMax),
+          x: xScale(valMax),
           y: -5
         })
         .text('$' + commaSeparateNumber(Math.round(valMax)));
@@ -201,13 +205,19 @@ function buildUp(){}
 
 function dropListChange(value){
   d3.csv('./data/national/DRG-' + value + '.csv',function(error, csv){
-    console.log(csv);
-
+    redrawNewData(csv);
   });
 }
 
 function redrawNewData(newData){
-//select main svg, get all elements in that
-//this isn't to swap to new data, this is to rescale and change existing rows to new values
-//and to have a new max and avg 
+  var bars = d3.selectAll("rect.bar");
+
+  bars.each(function(){
+    var domBarElem = this; 
+    var stateBar = _.find(newData, function(d){return d.state == domBarElem.attributes["barState"].value;});
+    
+    if (stateBar !== undefined){
+      d3.select(domBarElem).attr("width", xScale(stateBar.avgCoveredCharges));
+    }
+  });
 }
