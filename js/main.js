@@ -6,9 +6,10 @@ var margin = {t: 20, b: 10, l: 10, r: 10};
 var chartSpec = {topMargin: 30, w: 600, label:{size: 12, color: "#000", moColor: "#474747"}};
 //todo: replace with something dynamic
 var svgTemp = {w: 1000, h: 5000};
+var transitionSpeed = 500;
 
 //this will be referenced by functions that need to transition from the old scale to a new one
-var xScale; 
+var prevState = {xScale: undefined}
 
 function loadData(){
   //fill list of DRGs
@@ -64,7 +65,7 @@ function loadData(){
       d3.selectAll("text.barLabel")
       .attr("x", chartStart - 4);
 
-      xScale = d3.scale.linear()
+      prevState.xScale = d3.scale.linear()
         .domain([0, valMax])
         .range([0, chartSpec.w]);
 
@@ -81,7 +82,7 @@ function loadData(){
           x: 0,
           y: function(d,i){return i * (barSpec.h + barSpec.spacing);},
           height: barSpec.h,
-          width: function(d){return xScale(d.avgCoveredCharges);},
+          width: function(d){return prevState.xScale(d.avgCoveredCharges);},
           fill: barSpec.fill,
           id: function(d, i){ return "bar" + i;},
           "barState": function(d){return d.state;}
@@ -118,7 +119,7 @@ function loadData(){
 
         bars.selectAll('text.barValueLabel')
         .attr({
-          x: function (d, i) {return xScale(d.avgCoveredCharges) - 2;},
+          x: function (d, i) {return prevState.xScale(d.avgCoveredCharges) - 2;},
           y: function (d, i) {return (i * (barSpec.h + barSpec.spacing)) + (this.getBBox().height) + 1;}
         });
 
@@ -135,12 +136,12 @@ function loadData(){
 
       //average line
       var avg = d3.mean(csv, function(d){return d.avgCoveredCharges;});
-console.log(avg);
+
       bars.append("line")
       .attr({
-        x1: xScale(avg),
+        x1: prevState.xScale(avg),
         y1: 0  ,
-        x2: xScale(avg),
+        x2: prevState.xScale(avg),
         y2: (csv.length * (barSpec.h + barSpec.spacing)) - barSpec.spacing ,
         "id" : 'avgLine',
         'opacity': 1
@@ -158,19 +159,22 @@ console.log(avg);
           "text-anchor": "middle",
           id : 'avgLineLabel',
           "fill" : '#000',
-          x: xScale(avg),
+          x: prevState.xScale(avg),
           y: -5
         })
         .text('$' + commaSeparateNumber(Math.round(avg)));
 
       //max line
-      bars.append("line")
+      bars.selectAll("#maxLine")
+      .data([valMax])
+      .enter()
+      .append("line")
       .attr({
-        x1: xScale(valMax),
+        x1: function(d){return prevState.xScale(d);},
         y1: 0  ,
-        x2: xScale(valMax),
+        x2: function(d){return prevState.xScale(d);},
         y2: (csv.length * (barSpec.h + barSpec.spacing)) - barSpec.spacing ,
-        "id" : 'avgLine',
+        "id" : 'maxLine',
         'opacity': 1
       })
       .style({
@@ -185,7 +189,7 @@ console.log(avg);
           "text-anchor": "middle",
           id : 'maxLineLabel',
           "fill" : '#000',
-          x: xScale(valMax),
+          x: prevState.xScale(valMax),
           y: -5
         })
         .text('$' + commaSeparateNumber(Math.round(valMax)));
@@ -211,13 +215,40 @@ function dropListChange(value){
 
 function redrawNewData(newData){
   var bars = d3.selectAll("rect.bar");
+  var newMax = d3.max(newData, function(d){return d.avgCoveredCharges});
+  //add promise
+  reScale(newMax);
 
-  bars.each(function(){
+  /*bars.each(function(){
     var domBarElem = this; 
     var stateBar = _.find(newData, function(d){return d.state == domBarElem.attributes["barState"].value;});
     
     if (stateBar !== undefined){
       d3.select(domBarElem).attr("width", xScale(stateBar.avgCoveredCharges));
     }
-  });
+  });*/
+}
+
+function reScale(max){
+  var newX = d3.scale.linear()
+    .domain([0, max])
+    .range([0, chartSpec.w]); 
+
+    d3.selectAll("rect.bar")
+    .transition()
+    .duration(transitionSpeed)
+    .attr({
+      width : function(d) {return newX(d.avgCoveredCharges);}
+    });
+
+    d3.select("#maxLine")
+    .transition()
+    .duration(transitionSpeed)
+    .attr({
+      x1 : function(d) {return newX(d);},
+      x2 : function(d) {return newX(d);}
+    });
+    
+
+    prevState.xScale = newX;
 }
