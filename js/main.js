@@ -137,11 +137,14 @@ function loadData(){
       //average line
       var avg = d3.mean(csv, function(d){return d.avgCoveredCharges;});
 
-      bars.append("line")
+      bars.selectAll("#avgLine")
+      .data([avg])
+      .enter()
+      .append("line")
       .attr({
-        x1: prevState.xScale(avg),
+        x1: function(d){return prevState.xScale(d);},
         y1: 0  ,
-        x2: prevState.xScale(avg),
+        x2: function(d){return prevState.xScale(d);},
         y2: (csv.length * (barSpec.h + barSpec.spacing)) - barSpec.spacing ,
         "id" : 'avgLine',
         'opacity': 1
@@ -152,8 +155,12 @@ function loadData(){
         'stroke-dasharray': ("6, 5")
       });
 
-      bars.append("text")
+      bars.selectAll("#avgLineLabel")
+      .data([avg])
+      .enter()
+      .append("text")
         .attr({
+          "id" : "avgLineLabel",
           "font-size": chartSpec.label.size,
           "dominant-baseline": "end",
           "text-anchor": "middle",
@@ -182,7 +189,10 @@ function loadData(){
         'stroke-width': 1
       });
 
-      bars.append("text")
+      bars.selectAll("#maxLineLabel")
+      .data([valMax])
+      .enter()
+      .append("text")
         .attr({
           "font-size": chartSpec.label.size,
           "dominant-baseline": "end",
@@ -248,7 +258,36 @@ function reScale(max){
       x1 : function(d) {return newX(d);},
       x2 : function(d) {return newX(d);}
     });
-    
+
+    d3.select("#maxLineLabel")
+    .transition()
+    .duration(transitionSpeed)
+    .attr({
+      x : function(d) {return newX(d);}
+    });
+
+    d3.select("#avgLine")
+    .transition()
+    .duration(transitionSpeed)
+    .attr({
+      x1 : function(d) {return newX(d);},
+      x2 : function(d) {return newX(d);}
+    });
+
+    d3.select("#avgLineLabel")
+    .transition()
+    .duration(transitionSpeed)
+    .attr({
+      x : function(d) {return newX(d);}
+    });
+
+
+    d3.selectAll('text.barValueLabel')
+      .transition()
+      .duration(transitionSpeed)
+      .attr({
+        x: function (d, i) {return newX(d.avgCoveredCharges) - 2;}
+      })
 
     prevState.xScale = newX;
 }
