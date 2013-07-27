@@ -85,6 +85,7 @@ function loadData(){
           height: barSpec.h,
           width: function(d){return prevState.xScale(d.avgCoveredCharges);},
           fill: barSpec.fill,
+          'opacity': 1,
           id: function(d, i){ return "bar" + i;},
           "barState": function(d){return d.state;}
         })
@@ -114,7 +115,8 @@ function loadData(){
           "dominant-baseline": "end",
           "text-anchor": "end",
           id : function(d,i){ return "vLbl" + i;},
-          "fill" : '#000'
+          "fill" : '#000',
+          'opacity': 1
         })
         .text(function(d){return '$' + commaSeparateNumber(d.avgCoveredCharges);});
 
@@ -238,38 +240,71 @@ function redrawNewData(newData){
       var toAdd = _.difference(newIndexes, oldIndexes);
 
       if (toAdd.length > 0){
-        console.log("to add!");
+        //add space for each new element that is being added
+        console.log(toAdd);
       }
 
       //remove the labels and the bars and shift all bars under it up 
       var toRemove = _.difference(oldIndexes, newIndexes);
       if (toRemove.length > 0){
-        d3.selectAll("text.barLabel, rect.bar, text.barValueLabel").filter(function(lblData){ 
+        var removeElems = d3.selectAll("text.barLabel, rect.bar, text.barValueLabel").filter(function(lblData){ 
           return _.find(toRemove, function(removeState){return lblData.state == removeState;});
-        }).remove();
+        });
+
+        removeElems.remove();
 
         d3.selectAll("rect.bar")
+        .transition()
+        .duration(transitionSpeed)
         .attr({
           y: function(d,i){return i * (barSpec.h + barSpec.spacing);}
         });
 
         d3.selectAll("text.barLabel")
+        .transition()
+        .duration(transitionSpeed)
         .attr({
           y: function (d, i) {return (i * (barSpec.h + barSpec.spacing)) + (this.getBBox().height);}
         });
 
         d3.selectAll('text.barValueLabel')
+        .transition()
+        .duration(transitionSpeed)
         .attr({
           y: function (d, i) {return (i * (barSpec.h + barSpec.spacing)) + (this.getBBox().height) + 1;}
         });
       }
       
       //resize bars
-      /*bars.transition()
+      bars
+      .transition()
+      .duration(transitionSpeed)
+      .attr({
+        width : function(d) {return 0;}
+      });
+
+      d3.selectAll('#maxLine')
+        .transition()
         .duration(transitionSpeed)
-        .attr({
-          width : function(d) {return 0;}
-        });*/
+        .attr({ 
+          x1: prevState.xScale(newMax),
+          x2: prevState.xScale(newMax),
+          y2: margin.t + ((barSpec.h + barSpec.spacing) * newData.length) - barSpec.spacing
+        });
+
+      d3.select('#maxLineLabel')
+        .transition() 
+        .duration(transitionSpeed)
+        .attr('x', prevState.xScale(newMax))
+        .tween("text", function(d) {
+          var i = d3.interpolate(this.textContent, newMax),
+          prec = (newMax + "").split("."),
+          round = (prec.length > 1) ? Math.pow(10, prec[1].length) : 1;
+
+          return function(t) {
+            this.textContent = Math.round(i(t) * round) / round;
+          }; 
+        });   
     }
   );
 
