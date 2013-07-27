@@ -15,7 +15,8 @@ diagRows.times do
 	config_path = File.expand_path("../../national/DRG-" + diagCode + ".csv", __FILE__)
 	outfile = File.open(config_path, 'w')
 
-	rs = con.query 'SELECT p.state, ROUND(avg(i.averageCoveredCharges)) averageCoveredCharges, ROUND(avg(i.averagePayments)) averagePayments
+	rs = con.query 'SELECT p.state, ROUND(SUM(i.averageCoveredCharges * i.totalDischarges) / SUM(i.totalDischarges)) averageCoveredCharges,
+		ROUND(SUM(i.averagePayments * i.totalDischarges) / SUM(i.totalDischarges)) averagePayments
 		FROM provider p
 		INNER JOIN inpatient i ON i.providerID = p.id
 		INNER JOIN diagnosis d ON i.drgid = d.id

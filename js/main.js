@@ -231,91 +231,10 @@ function redrawNewData(newData){
   var newIndexes = newData.map(function(d){ return d.state;});
   var oldIndexes = (bars.data()).map(function(d){ return d.state;});
 
-  //step 1, rescale
-  var rescalePromise = reScale(newMax);
+  d3.selectAll("rect.bar, text.barValueLabel, text#maxLineLabel, line#maxLine, text#avgLineLabel, line#avgLine").remove();
 
-  rescalePromise.done(
-    function(){
-      //add/remove is only relevant to this bc in every other situation, the whole dataset will change
-      var toAdd = _.difference(newIndexes, oldIndexes);
+  
 
-      if (toAdd.length > 0){
-        //add space for each new element that is being added
-        console.log(toAdd);
-      }
-
-      //remove the labels and the bars and shift all bars under it up 
-      var toRemove = _.difference(oldIndexes, newIndexes);
-      if (toRemove.length > 0){
-        var removeElems = d3.selectAll("text.barLabel, rect.bar, text.barValueLabel").filter(function(lblData){ 
-          return _.find(toRemove, function(removeState){return lblData.state == removeState;});
-        });
-
-        removeElems.remove();
-
-        d3.selectAll("rect.bar")
-        .transition()
-        .duration(transitionSpeed)
-        .attr({
-          y: function(d,i){return i * (barSpec.h + barSpec.spacing);}
-        });
-
-        d3.selectAll("text.barLabel")
-        .transition()
-        .duration(transitionSpeed)
-        .attr({
-          y: function (d, i) {return (i * (barSpec.h + barSpec.spacing)) + (this.getBBox().height);}
-        });
-
-        d3.selectAll('text.barValueLabel')
-        .transition()
-        .duration(transitionSpeed)
-        .attr({
-          y: function (d, i) {return (i * (barSpec.h + barSpec.spacing)) + (this.getBBox().height) + 1;}
-        });
-      }
-      
-      //resize bars
-      bars
-      .transition()
-      .duration(transitionSpeed)
-      .attr({
-        width : function(d) {return 0;}
-      });
-
-      d3.selectAll('#maxLine')
-        .transition()
-        .duration(transitionSpeed)
-        .attr({ 
-          x1: prevState.xScale(newMax),
-          x2: prevState.xScale(newMax),
-          y2: margin.t + ((barSpec.h + barSpec.spacing) * newData.length) - barSpec.spacing
-        });
-
-      d3.select('#maxLineLabel')
-        .transition() 
-        .duration(transitionSpeed)
-        .attr('x', prevState.xScale(newMax))
-        .tween("text", function(d) {
-          var i = d3.interpolate(this.textContent, newMax),
-          prec = (newMax + "").split("."),
-          round = (prec.length > 1) ? Math.pow(10, prec[1].length) : 1;
-
-          return function(t) {
-            this.textContent = Math.round(i(t) * round) / round;
-          }; 
-        });   
-    }
-  );
-
-  /*bars.each(function(){
-    var domBarElem = this; 
-    var stateBar = _.find(newData, function(d){return d.state == domBarElem.attributes["barState"].value;});
-    
-    if (stateBar !== undefined){
-      d3.select(domBarElem).attr("width", xScale(stateBar.avgCoveredCharges));
-    }
-  });*/
 }
 
 function reScale(max){

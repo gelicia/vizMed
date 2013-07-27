@@ -26,7 +26,8 @@ CSV.foreach("../national/DRG-All.csv", {:headers=>:first_row}) do |row|
 		config_path = File.expand_path("../../national/" + state + "/DRG-" + diagCode + ".csv", __FILE__)
 		outfile = File.open(config_path, 'w')
 
-		rs = con.query 'SELECT p.city, ROUND(avg(i.averageCoveredCharges)) averageCoveredCharges, ROUND(avg(i.averagePayments)) averagePayments
+		rs = con.query 'SELECT p.city, ROUND(SUM(i.averageCoveredCharges * i.totalDischarges) / SUM(i.totalDischarges)) averageCoveredCharges,
+			ROUND(SUM(i.averagePayments * i.totalDischarges) / SUM(i.totalDischarges)) averagePayments
 			FROM provider p
 			INNER JOIN inpatient i ON i.providerID = p.id
 			INNER JOIN diagnosis d ON i.drgid = d.id
