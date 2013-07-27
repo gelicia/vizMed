@@ -9,7 +9,7 @@ var svgTemp = {w: 1000, h: 5000};
 var transitionSpeed = 500;
 
 //this will be referenced by functions that need to transition from the old scale to a new one
-var prevState = {xScale: undefined}
+var prevState = {xScale: undefined};
 
 function loadData(){
   //fill list of DRGs
@@ -53,6 +53,7 @@ function loadData(){
         })
         .text(function(d){return d.state;});
 
+        //the labels are drawn first, then the height is used to calculate the y value
         labelG.selectAll('text.barLabel')
         .attr({
           y: function (d, i) {return (i * (barSpec.h + barSpec.spacing)) + (this.getBBox().height);}
@@ -112,7 +113,7 @@ function loadData(){
           "font-size": chartSpec.label.size,
           "dominant-baseline": "end",
           "text-anchor": "end",
-          id : function(d,i){ return "lbl" + i;},
+          id : function(d,i){ return "vLbl" + i;},
           "fill" : '#000'
         })
         .text(function(d){return '$' + commaSeparateNumber(d.avgCoveredCharges);});
@@ -164,7 +165,6 @@ function loadData(){
           "font-size": chartSpec.label.size,
           "dominant-baseline": "end",
           "text-anchor": "middle",
-          id : 'avgLineLabel',
           "fill" : '#000',
           x: prevState.xScale(avg),
           y: -5
@@ -225,9 +225,53 @@ function dropListChange(value){
 
 function redrawNewData(newData){
   var bars = d3.selectAll("rect.bar");
-  var newMax = d3.max(newData, function(d){return d.avgCoveredCharges});
-  //add promise
-  reScale(newMax);
+  var newMax = d3.max(newData, function(d){return d.avgCoveredCharges;});
+  var newIndexes = newData.map(function(d){ return d.state;});
+  var oldIndexes = (bars.data()).map(function(d){ return d.state;});
+
+  //step 1, rescale
+  var rescalePromise = reScale(newMax);
+
+  rescalePromise.done(
+    function(){
+      //add/remove is only relevant to this bc in every other situation, the whole dataset will change
+      var toAdd = _.difference(newIndexes, oldIndexes);
+
+      if (toAdd.length > 0){
+        console.log("to add!");
+      }
+
+      //remove the labels and the bars and shift all bars under it up 
+      var toRemove = _.difference(oldIndexes, newIndexes);
+      if (toRemove.length > 0){
+        d3.selectAll("text.barLabel, rect.bar, text.barValueLabel").filter(function(lblData){ 
+          return _.find(toRemove, function(removeState){return lblData.state == removeState;});
+        }).remove();
+
+        d3.selectAll("rect.bar")
+        .attr({
+          y: function(d,i){return i * (barSpec.h + barSpec.spacing);}
+        });
+
+        d3.selectAll("text.barLabel")
+        .attr({
+          y: function (d, i) {return (i * (barSpec.h + barSpec.spacing)) + (this.getBBox().height);}
+        });
+
+        d3.selectAll('text.barValueLabel')
+        .attr({
+          y: function (d, i) {return (i * (barSpec.h + barSpec.spacing)) + (this.getBBox().height) + 1;}
+        });
+      }
+      
+      //resize bars
+      /*bars.transition()
+        .duration(transitionSpeed)
+        .attr({
+          width : function(d) {return 0;}
+        });*/
+    }
+  );
 
   /*bars.each(function(){
     var domBarElem = this; 
@@ -240,18 +284,20 @@ function redrawNewData(newData){
 }
 
 function reScale(max){
+  var def = $.Deferred();
+
   var newX = d3.scale.linear()
     .domain([0, max])
     .range([0, chartSpec.w]); 
 
-    d3.selectAll("rect.bar")
+  d3.selectAll("rect.bar")
     .transition()
     .duration(transitionSpeed)
     .attr({
       width : function(d) {return newX(d.avgCoveredCharges);}
     });
 
-    d3.select("#maxLine")
+  d3.select("#maxLine")
     .transition()
     .duration(transitionSpeed)
     .attr({
@@ -259,14 +305,14 @@ function reScale(max){
       x2 : function(d) {return newX(d);}
     });
 
-    d3.select("#maxLineLabel")
+  d3.select("#maxLineLabel")
     .transition()
     .duration(transitionSpeed)
     .attr({
       x : function(d) {return newX(d);}
     });
 
-    d3.select("#avgLine")
+  d3.select("#avgLine")
     .transition()
     .duration(transitionSpeed)
     .attr({
@@ -274,20 +320,22 @@ function reScale(max){
       x2 : function(d) {return newX(d);}
     });
 
-    d3.select("#avgLineLabel")
+  d3.select("#avgLineLabel")
     .transition()
     .duration(transitionSpeed)
     .attr({
       x : function(d) {return newX(d);}
     });
 
+  d3.selectAll('text.barValueLabel')
+    .transition()
+    .duration(transitionSpeed)
+    .attr({
+      x: function (d, i) {return newX(d.avgCoveredCharges) - 2;}
+    })
+    .each('end',function(){def.resolve();});
 
-    d3.selectAll('text.barValueLabel')
-      .transition()
-      .duration(transitionSpeed)
-      .attr({
-        x: function (d, i) {return newX(d.avgCoveredCharges) - 2;}
-      })
+  prevState.xScale = newX;
 
-    prevState.xScale = newX;
+  return def.promise();
 }
