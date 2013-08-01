@@ -57,23 +57,26 @@ function drawChart(svg, data) {
 		.duration(transitionSpeed)
 		.attr({
 			width: 0
-		}).remove();
+		});
+
+	bars.exit().remove();
 
 	bars.exit().selectAll("text").remove();
 
 	labels.exit().remove();
 
 	//add new data
-	bars.enter().append("g")
+	var barG = bars.enter().append("g")
 	.classed("bar", true)
 	.attr({
 		transform: function(d, i){ return 'translate(0, '+(i*(barSpec.h + barSpec.spacing))+')'; }
-	})
-	.append("rect")
+	});
+
+	var rect = barG.append("rect")
 		.attr({
 			x: 0,
 			y: 0,
-			width: function(d){ return xScale(d.avgCoveredCharges);},
+			width: 0,
 			height : barSpec.h,
 			fill: barSpec.fill
 		});
@@ -81,4 +84,18 @@ function drawChart(svg, data) {
 	labels.enter().append("text")
 	.classed("barLabel", true)
 	.text(function(d){return d.state;});
+
+	//update data
+	bars.transition().duration(transitionSpeed)
+		.delay(transitionSpeed)
+		.attr({
+			transform: function(d, i){ console.log(d.state + " " + i) ;return 'translate(0, '+(i*(barSpec.h + barSpec.spacing))+')'; }
+		});
+
+	rect.transition()
+		.duration(transitionSpeed)
+		.delay(transitionSpeed)
+		.attr({
+			width : function(d) {return xScale(d.avgCoveredCharges);}
+		});
 }
