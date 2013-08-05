@@ -63,13 +63,40 @@ function drawChart(svg, data) {
 
 	bars.exit().selectAll("text").remove();
 
-	labels.exit().remove();
+	labels.exit()
+		.transition()
+		.duration(transitionSpeed)
+		.attr({
+			opacity: 0
+		}).remove();
+
+	//add new labels - write them first as non visible to get the height and length, then position them based on their size
+	labels.enter().append("text")
+		.classed('barLabel', true)
+        .attr({
+          "font-size": chartSpec.label.size,
+          "dominant-baseline": "middle",
+          "text-anchor": "end",
+          id : function(d,i){ return "lbl" + i;},
+          "fill" : chartSpec.label.color,
+          opacity: 1
+        })
+        .text(function(d){return d.state;});
+
+		var chartStart = d3.max(labels[0], function(d){return d.getComputedTextLength();});
+        
+        labels
+        .attr({
+          x: chartStart,
+          y: function (d, i) {return (i * (barSpec.h + barSpec.spacing)) + (this.getBBox().height);}
+        });
+     
 
 	//add new data
 	var barG = bars.enter().append("g")
 	.classed("bar", true)
 	.attr({
-		transform: function(d, i){ return 'translate(0, '+(i*(barSpec.h + barSpec.spacing))+')'; }
+		transform: function(d, i){ return 'translate(' + (chartStart + 4) + ', '+(i*(barSpec.h + barSpec.spacing))+')'; }
 	});
 
 	var rect = barG.append("rect")
@@ -81,18 +108,14 @@ function drawChart(svg, data) {
 			fill: barSpec.fill
 		});
 
-	labels.enter().append("text")
-	.classed("barLabel", true)
-	.text(function(d){return d.state;});
-
 	//update data
 	bars.transition().duration(transitionSpeed)
 		.delay(transitionSpeed)
 		.attr({
-			transform: function(d, i){ console.log(d.state + " " + i) ;return 'translate(0, '+(i*(barSpec.h + barSpec.spacing))+')'; }
+			transform: function(d, i){ return 'translate(' + (chartStart + 4) + ', '+(i*(barSpec.h + barSpec.spacing))+')'; }
 		});
 
-	rect.transition()
+	bars.selectAll('rect').transition()
 		.duration(transitionSpeed)
 		.delay(transitionSpeed)
 		.attr({
