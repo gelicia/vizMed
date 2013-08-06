@@ -44,24 +44,22 @@ function drawChart(svg, data) {
 	//the key labels are to the left of that so they do not count
 	var chart = svg.selectAll("g.barChart");
 
-	var bars = chart.selectAll("g.bar").data(data, function(d){return d.state;});
+	var rects = chart.selectAll("rect.bar").data(data, function(d){return d.state;});
 	var labels = svg.selectAll("text.barLabel").data(data, function(d){return d.state;});
-
+	console.log(d3.max(data, function(d){return d.avgCoveredCharges;}));
 	var xScale = d3.scale.linear()
 		.domain([0, d3.max(data, function(d){return d.avgCoveredCharges;})])
 		.range([0, chartSpec.w]); 
 
 	//remove old data
-	bars.exit().selectAll("rect")
+	rects.exit()
 		.transition()
 		.duration(transitionSpeed)
 		.attr({
 			width: 0
-		});
+		}).remove();
 
-	bars.exit().remove();
-
-	bars.exit().selectAll("text").remove();
+	//todo remove bar value text
 
 	labels.exit()
 		.transition()
@@ -71,7 +69,7 @@ function drawChart(svg, data) {
 		}).remove();
 
 	//add new labels - write them first as non visible to get the height and length, then position them based on their size
-	labels.enter().append("text")
+	var newLabels = labels.enter().append("text")
 		.classed('barLabel', true)
         .attr({
           "font-size": chartSpec.label.size,
@@ -79,46 +77,44 @@ function drawChart(svg, data) {
           "text-anchor": "end",
           id : function(d,i){ return "lbl" + i;},
           "fill" : chartSpec.label.color,
-          opacity: 1
+          opacity: 0
         })
         .text(function(d){return d.state;});
 
-		var chartStart = d3.max(labels[0], function(d){return d.getComputedTextLength();});
+	var chartStart = d3.max(labels[0], function(d){return d.getComputedTextLength();});
         
-        labels
-        .attr({
-          x: chartStart,
-          y: function (d, i) {return (i * (barSpec.h + barSpec.spacing)) + (this.getBBox().height);}
-        });
+    labels.transition()
+    .duration(transitionSpeed)
+    .delay(transitionSpeed)
+    .attr({
+      x: chartStart,
+      y: function (d, i) {return (i * (barSpec.h + barSpec.spacing)) + (this.getBBox().height);}
+    });
      
+    newLabels.transition()
+    .duration(transitionSpeed)
+    .delay(transitionSpeed)
+    .attr({
+		opacity: 1
+    });
 
-	//add new data
-	var barG = bars.enter().append("g")
-	.classed("bar", true)
-	.attr({
-		transform: function(d, i){ return 'translate(' + (chartStart + 4) + ', '+(i*(barSpec.h + barSpec.spacing))+')'; }
-	});
-
-	var rect = barG.append("rect")
+	rects.enter().append("rect")
+		.classed('bar', true)
 		.attr({
-			x: 0,
-			y: 0,
+			x: chartStart + 4,
+			y: function(d,i){ return i*(barSpec.h + barSpec.spacing); },
 			width: 0,
 			height : barSpec.h,
 			fill: barSpec.fill
 		});
 
 	//update data
-	bars.transition().duration(transitionSpeed)
-		.delay(transitionSpeed)
-		.attr({
-			transform: function(d, i){ return 'translate(' + (chartStart + 4) + ', '+(i*(barSpec.h + barSpec.spacing))+')'; }
-		});
-
-	bars.selectAll('rect').transition()
+	//grows the bar out to the width (inits to 0)
+	rects.transition()
 		.duration(transitionSpeed)
 		.delay(transitionSpeed)
 		.attr({
-			width : function(d) {return xScale(d.avgCoveredCharges);}
+			y: function(d,i){ return i*(barSpec.h + barSpec.spacing); },
+			width : function(d) { return xScale(d.avgCoveredCharges);}
 		});
 }
