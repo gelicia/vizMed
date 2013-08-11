@@ -4,6 +4,8 @@ var chartSpec = {topMargin: 100, w: 600, label:{size: 12, color: "#000", moColor
 var svgTemp = {w: 1000};
 var transitionSpeed = 500;
 
+var travelPath = ["USA"];
+
 function loadData(){
 	//fill list of DRGs
 	d3.csv('./data/diagnoses.csv', function(error, csv){
@@ -17,7 +19,7 @@ function loadData(){
 		.text(function(d){return d.code + " - " + d.description;});
 	});
 
-
+    //this can just be hardcoded, will always init at drg all 
 	d3.csv('./data/national/DRG-All.csv', function(error, csv){
 		var chartMain = d3.select("#chartMain")
 		.attr({
@@ -35,14 +37,40 @@ function loadData(){
 	});
 }
 
-function dropListChange(drgCode){
-	//todo : more than just national
-	d3.csv('./data/national/DRG-' + drgCode + '.csv', function(error, csv){
+function getFilePath(drgCode){
+    var pathOut = './data/national/';
+
+    switch (travelPath.length){
+        case 1 : break; //national level
+        case 2 : pathOut = pathOut + travelPath[1] + "/"; //state level
+                 break;
+        case 3 : pathOut = pathOut + travelPath[1] + "/" + travelPath[2] + "/"; //city level
+                 break;
+        case 4 : pathOut = pathOut + travelPath[1] + "/" + travelPath[2] + "/providers/" + travelPath[3] + "-DRGs.csv"; //provider level
+                 break;
+    }
+
+    //fileName part - provider level does not seperate by DRG
+    if(travelPath.length < 4){
+        pathOut = pathOut + "DRG-" + drgCode + ".csv";
+    }
+    console.log("path: " + pathOut);
+    return pathOut;
+}
+
+//this should handle all changes, since there isn't a lot of differences between them 
+function redrawChart(drgCode, travelLevel){
+    if (travelLevel !== undefined){
+        travelPath.push(travelLevel);
+    }
+    
+	d3.csv(getFilePath(drgCode), function(error, csv){
 		d3.select("#chartMain").call(drawChart, csv);
 	});
 }
 
 function drawChart(svg, data) {
+
     data.map(function(d){
         d.avgCoveredCharges = Number(d.avgCoveredCharges);
         d.averagePayments = Number(d.averagePayments);
@@ -57,9 +85,19 @@ function drawChart(svg, data) {
 	var chart = svg.selectAll("g.barChart").attr("transform", "translate(0, 30)");
     var keyLabels = svg.selectAll("g.keyLabels").attr("transform", "translate(0, 30)");
 
-	var rects = chart.selectAll("rect.bar").data(data, function(d){return d.state;});
-    var barValLabel = chart.selectAll("text.barValueLabel").data(data, function(d){return d.state;});
-	var labels = keyLabels.selectAll("text.barLabel").data(data, function(d){return d.state;});
+    //this varies depending on where we are data-wise
+    var keyName;
+
+    switch (travelPath.length){
+        case 1 : keyName = 'state'; break;
+        case 2 : keyName = 'city'; break;
+        case 3 : keyName = 'providerName'; break;
+        case 4 : keyName = 'description'; break;
+    }
+
+	var rects = chart.selectAll("rect.bar").data(data, function(d){return d[keyName];});
+    var barValLabel = chart.selectAll("text.barValueLabel").data(data, function(d){return d[keyName];});
+	var labels = keyLabels.selectAll("text.barLabel").data(data, function(d){ return d[keyName];});
 
 	//remove old data
 	rects.exit()
@@ -92,7 +130,7 @@ function drawChart(svg, data) {
           "fill" : chartSpec.label.color,
           opacity: 0
         })
-        .text(function(d){return d.state;});
+        .text(function(d){return d[keyName];});
 
 	var chartStart = d3.max(labels[0], function(d){return d.getComputedTextLength();}) + 4;
         
@@ -134,6 +172,9 @@ function drawChart(svg, data) {
 
            d3.select("#lbl" + i)
             .attr("fill", chartSpec.label.color);
+        })
+        .on('click', function(d){
+            redrawChart($("#drgSelect").children(':selected').val(), keyName == "providerName" ? d.providerNationalID : d[keyName]);
         });
 
 	//update data

@@ -30,7 +30,7 @@
     <div id="content">
       <p>This visualization allows you to explore what provider charges what amount of money to medicare for an average of all diagnosis and individual diagnoses. The yellow bar is the average. Hover over a bar for the totals.</p>
       <p>When All DRGs is selected, it is averaging all of them together. Every bar is an average of all providers in that state or city. When All DRGs is selected, you can drill down to see the list of diagnosises that provider has with the cost. </p>
-      <p><select id='drgSelect' onChange="dropListChange(this.options[this.selectedIndex].value)"></select></p>
+      <p><select id='drgSelect' onChange="redrawChart(this.options[this.selectedIndex].value)"></select></p>
       <svg id="chartMain"></svg>
     </div>
   </body>
