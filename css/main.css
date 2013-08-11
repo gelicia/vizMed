@@ -39,3 +39,7 @@ p.chartNav {
 select.drgSelect {
 	width: 500px;
 }
+
+.barLabel, .barValueLabel {
+	pointer-events : none;
+}

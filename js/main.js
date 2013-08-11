@@ -1,5 +1,5 @@
 var barSpec = {spacing: 2, h: 20, fill: '#5777C0', moFill: '#A2B6E5'};
-var chartSpec = {w: 600, insideOffset: 30, label:{size: 12, color: "#000", moColor: "#474747"}};
+var chartSpec = {w: 600, insideOffset: 30, label:{size: 14, color: "#000"}};
 //todo: replace with something dynamic
 var svgTemp = {w: 10000};
 var transitionSpeed = 500;
@@ -139,7 +139,7 @@ function drawChart(svg, data) {
 		.classed('barLabel', true)
         .attr({
           "font-size": chartSpec.label.size,
-          "dominant-baseline": "middle",
+          "dominant-baseline": "central",
           "text-anchor": "end",
           id : function(d,i){ return "lbl" + i;},
           "fill" : chartSpec.label.color,
@@ -147,14 +147,14 @@ function drawChart(svg, data) {
         })
         .text(function(d){return d[keyName];});
 
-	var chartStart = d3.max(labels[0], function(d){return d.getComputedTextLength();}) + 4;
+	var chartStart = d3.max(labels[0], function(d){return d.getComputedTextLength();}) + 8;
         
     labels.transition()
     .duration(transitionSpeed)
     .delay(transitionSpeed)
     .attr({
       x: chartStart - 4,
-      y: function (d, i) {return (i * (barSpec.h + barSpec.spacing)) + (this.getBBox().height);}
+      y: function (d, i) {return (i * (barSpec.h + barSpec.spacing)) + (barSpec.h/2);}
     });
      
     newLabels.transition()
@@ -179,14 +179,14 @@ function drawChart(svg, data) {
             .attr("fill", barSpec.moFill);
 
           d3.select("#lbl" + i)
-            .attr("fill", chartSpec.label.moColor);
+            .attr("font-weight", "bold");
         })
         .on('mouseout', function(d, i){
           d3.select(this)
             .attr("fill", barSpec.fill);
 
            d3.select("#lbl" + i)
-            .attr("fill", chartSpec.label.color);
+            .attr("font-weight", "normal");
         })
         .on('click', function(d){
             redrawChart($("#drgSelect").children(':selected').val(), keyName == "providerName" ? {id: d.providerNationalID, name: d.providerName }  : d[keyName]);
