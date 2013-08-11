@@ -1,10 +1,10 @@
 var barSpec = {spacing: 2, h: 20, fill: '#5777C0', moFill: '#A2B6E5'};
-var chartSpec = {topMargin: 100, w: 600, insideOffset: 30, label:{size: 12, color: "#000", moColor: "#474747"}};
+var chartSpec = {w: 600, insideOffset: 30, label:{size: 12, color: "#000", moColor: "#474747"}};
 //todo: replace with something dynamic
-var svgTemp = {w: 1000};
+var svgTemp = {w: 10000};
 var transitionSpeed = 500;
 
-var travelPath = ["USA"];
+var travelPath = ["National"];
 
 function loadData(){
 	//fill list of DRGs
@@ -23,7 +23,6 @@ function loadData(){
 	d3.csv('./data/national/DRG-All.csv', function(error, csv){
 		var chartMain = d3.select("#chartMain")
 		.attr({
-			height: (csv.length * (barSpec.h + barSpec.spacing)) + 100, //todo this is messed up, why does the top margin need to be huge
 			width: svgTemp.w
 		});
 		
@@ -46,7 +45,7 @@ function getFilePath(drgCode){
                  break;
         case 3 : pathOut = pathOut + travelPath[1] + "/" + travelPath[2] + "/"; //city level
                  break;
-        case 4 : pathOut = pathOut + travelPath[1] + "/" + travelPath[2] + "/providers/" + travelPath[3] + "-DRGs.csv"; //provider level
+        case 4 : pathOut = pathOut + travelPath[1] + "/" + travelPath[2] + "/providers/" + travelPath[3].id + "-DRGs.csv"; //provider level
                  break;
     }
 
@@ -70,6 +69,8 @@ function redrawChart(drgCode, travelLevel){
 }
 
 function drawChart(svg, data) {
+    d3.select("#naviPath").html(travelPathToString());
+
     svg.attr("height", (data.length * (barSpec.spacing + barSpec.h)) + chartSpec.insideOffset);
 
     data.map(function(d){
@@ -80,8 +81,6 @@ function drawChart(svg, data) {
     var maxValue = d3.max(data, function(d){return d.avgCoveredCharges;});
     var avgValue = d3.mean(data, function(d){return d.avgCoveredCharges;});
     var xScale = d3.scale.linear().range([0, chartSpec.w]).domain([0, maxValue]);
-
-    console.log(xScale(maxValue));
 
 	//chart encompasses the bars, bar value labels, and lines of the chart, everything that starts at value 0
 	//the key labels are to the left of that so they do not count
@@ -190,7 +189,7 @@ function drawChart(svg, data) {
             .attr("fill", chartSpec.label.color);
         })
         .on('click', function(d){
-            redrawChart($("#drgSelect").children(':selected').val(), keyName == "providerName" ? d.providerNationalID : d[keyName]);
+            redrawChart($("#drgSelect").children(':selected').val(), keyName == "providerName" ? {id: d.providerNationalID, name: d.providerName }  : d[keyName]);
         });
 
 	//update data
@@ -226,7 +225,7 @@ function drawChart(svg, data) {
             };
         })
         .attr({
-          x: function (d, i) {console.log(xScale(d.avgCoveredCharges)); return chartStart + xScale(d.avgCoveredCharges) - 5;},
+          x: function (d, i) {return chartStart + xScale(d.avgCoveredCharges) - 5;},
           y: function (d, i) {return (barSpec.h/2) + (i * (barSpec.h + barSpec.spacing)) + 1;}
         });
 
@@ -323,6 +322,7 @@ function drawChart(svg, data) {
    
 }
 
+//utility functions
 d3.selection.prototype.moveToFront = function() {
   return this.each(function(){
     this.parentNode.appendChild(this);
@@ -331,4 +331,17 @@ d3.selection.prototype.moveToFront = function() {
 
 function commaSeparateNumber(val){
   return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function goBack(){
+    console.log("hello");
+}
+
+function travelPathToString(){
+    var strOut = "";
+    for (var i = 0; i < travelPath.length; i++) {
+        strOut = strOut + " > <a href=\"javascript:void(0)\" onclick=\"goBack();\">" + (typeof(travelPath[i]) == "object" ?  travelPath[i].name : travelPath[i] ) + "</a>";
+    }
+
+    return strOut.substring(3);
 }

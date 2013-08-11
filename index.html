@@ -10,17 +10,13 @@
   CSS and HTML Template by miss monorom http://www.intensivstation.ch
   This work is licensed under a Creative Commons License http://creativecommons.org/licenses/by/1.0/
   -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <script src="js/lib/jquery-2.0.3.min.js"></script>
     <script src="js/lib/underscore-min.js"></script>
     <script src="js/lib/d3.v3.min.js"></script>
     <script type = "text/javascript" src="js/main.js"></script>
-
-    <script type="text/javascript">
-      $( document ).ready(function() {
-        loadData();
-      });
-    </script>
   </head> 
 
   <body>
@@ -28,10 +24,18 @@
     <div id="left"></div>
     <div id="right"></div>
     <div id="content">
-      <p>This visualization allows you to explore what provider charges what amount of money to medicare for an average of all diagnosis and individual diagnoses. The yellow bar is the average. Hover over a bar for the totals.</p>
-      <p>When All DRGs is selected, it is averaging all of them together. Every bar is an average of all providers in that state or city. When All DRGs is selected, you can drill down to see the list of diagnosises that provider has with the cost. </p>
-      <p><select id='drgSelect' onChange="redrawChart(this.options[this.selectedIndex].value)"></select></p>
+      <div id="intro">
+        <p>This visualization allows you to explore what provider charges what amount of money to medicare for an average of all diagnosis and individual diagnoses.</p>
+        <p>The totals are an average, weighted by the number of discharges there were. For more information about the calculations, go here. </p> <!--todo calculation explanation-->
+      </div>
+      <p class="chartNav">DRG : <select id='drgSelect' onChange="redrawChart(this.options[this.selectedIndex].value)"></select></p>
+      <p class="chartNav" id="naviPath"></select></p>
       <svg id="chartMain"></svg>
     </div>
+        <script type="text/javascript">
+      $(document).ready(function() {
+        loadData();
+      });
+    </script>
   </body>
 </html>
