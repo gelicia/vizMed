@@ -11,7 +11,7 @@
   This work is licensed under a Creative Commons License http://creativecommons.org/licenses/by/1.0/
   -->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css">
+   <!-- <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css">-->
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <script src="js/lib/jquery-2.0.3.min.js"></script>
     <script src="js/lib/underscore-min.js"></script>
@@ -20,19 +20,21 @@
   </head> 
 
   <body>
-    <h1>Visualizing Hospital Price Data</h1>
+   <h1>Visualizing Hospital Price Data</h1>
     <div id="left"></div>
-    <div id="right"></div>
     <div id="content">
       <div id="intro">
-        <p>This visualization allows you to explore what provider charges what amount of money to medicare for an average of all diagnosis and individual diagnoses.</p>
-        <p>The totals are an average, weighted by the number of discharges there were. For more information about the calculations, go here. </p> <!--todo calculation explanation-->
+        <p>This visualization allows you to explore the charges that providers submit to Medicare.</p>
+        <p>The costs used for the bar chart are the average cost per discharge for that state/city/provider. The average and max cost for all the bars displayed on the page is an average of those values. Go here for more information about the calculation.</p><!--todo calculation explanation-->
       </div>
       <p class="chartNav">DRG : <select id='drgSelect' onChange="redrawChart(this.options[this.selectedIndex].value)"></select></p>
       <p class="chartNav" id="naviPath"></select></p>
       <svg id="chartMain"></svg>
     </div>
-        <script type="text/javascript">
+    <div class="footer">
+      <p>Created by Kristina Durivage for the <a href="http://visualizing.org/contests/visualizing-hospital-price-data">Visualizing Hospital Price Data Contest</a></p>
+    </div>
+    <script type="text/javascript">
       $(document).ready(function() {
         loadData();
       });

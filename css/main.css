@@ -1,9 +1,26 @@
+body {
+  margin: 0;
+  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+  background-color: #FFFFFF;
+}
+
+
 svg#chartMain {
 	margin-top: 10px;
 }
 
 h1 {
-	margin-left: 5px;
+	margin-left: 10px;
+	margin-bottom: 10px;
+}
+
+p {
+	margin-top: 0px;
+}
+
+a {
+  color: #428BCA;
+  text-decoration: none;
 }
 
 #left {
@@ -32,7 +49,7 @@ div#intro {
 }
 
 p.chartNav {
-	margin: 0px;
+	margin: 3px;
 	font-weight: bold;
 }
 
@@ -42,4 +59,18 @@ select.drgSelect {
 
 .barLabel, .barValueLabel {
 	pointer-events : none;
+}
+
+.footer {
+	background-color: #E8E8E8;
+	margin-left: 3px;
+	margin-top: 10px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	font-size: 10px;
+}
+
+.footer p {
+	margin-top: 10px;
+	
 }

@@ -1,7 +1,7 @@
 var barSpec = {spacing: 2, h: 20, fill: '#5777C0', moFill: '#A2B6E5'};
 var chartSpec = {w: 600, insideOffset: 30, label:{size: 14, color: "#000"}};
 //todo: replace with something dynamic
-var svgTemp = {w: 10000};
+var svgTemp = {w: 2000};
 var transitionSpeed = 500;
 
 var travelPath = ["National"];
@@ -261,7 +261,20 @@ function drawChart(svg, data) {
             };
         })
         .attr({
-          x: function (d, i) {return chartStart + xScale(d.avgCoveredCharges) - 5;},
+          x: function (d) { 
+            //if you try to get the size of this, it will only return the initial $0 and there is no way to calculate string length without drawing it
+            //so we draw it secretly, get the size then remove it
+            var tempSizeGetter = svg.append("text").attr({ "font-size": chartSpec.label.size}).text('$' + commaSeparateNumber(d.avgCoveredCharges));
+            var endSize = tempSizeGetter[0][0].getComputedTextLength() + 5;
+            tempSizeGetter.remove();
+
+            if (endSize > xScale(d.avgCoveredCharges)){
+                return chartStart + (xScale(d.avgCoveredCharges) * 2) + (endSize - xScale(d.avgCoveredCharges));
+            }
+            else {
+                return chartStart + xScale(d.avgCoveredCharges) - 5;
+            }
+          },
           y: function (d, i) {return (barSpec.h/2) + (i * (barSpec.h + barSpec.spacing)) + 1;}
         });
 
@@ -355,7 +368,6 @@ function drawChart(svg, data) {
         .attr({
           x: function (d, i) {return chartStart + xScale(maxValue);}
         });
-   
 }
 
 //utility functions
