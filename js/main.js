@@ -36,6 +36,7 @@ function loadData(){
 	});
 }
 
+//return the directory to go to by the travelPath and the drg passed in
 function getFilePath(drgCode){
     var pathOut = './data/national/';
 
@@ -57,7 +58,8 @@ function getFilePath(drgCode){
     return pathOut;
 }
 
-//this should handle all changes, since there isn't a lot of differences between them 
+//redrawChart is ran with drill downs, the initial load, and drg changes.
+//it appends onto travelLevel and then goes to that level
 function redrawChart(drgCode, travelLevel){
     if (travelLevel !== undefined){
         travelPath.push(travelLevel);
@@ -68,6 +70,38 @@ function redrawChart(drgCode, travelLevel){
 	});
 }
 
+//goBack is ran with build ups to return to a previous path
+//it removes items out of travel path and then goes to that level
+function goBack(backLabel){
+    //this isn't a foolproof way to do this, but I checked and all providers have different citys and states and names
+    var drgCode = $("#drgSelect").children(':selected').val();
+
+    //find the travel path level with the label, remove everything after it
+    var selectedIdx = travelPath.indexOf(backLabel);
+    travelPath = travelPath.slice(0, selectedIdx+1);
+
+    d3.csv(getFilePath(drgCode), function(error, csv){
+        d3.select("#chartMain").call(drawChart, csv);
+    });
+}
+
+//this generates the HTML that makes up the travel path
+function travelPathToString(){
+    var strOut = "";
+    for (var i = 0; i < travelPath.length; i++) {
+        //turn all previous path entries into links to go back, otherwise it's just text
+        if (i < travelPath.length - 1) {
+            strOut = strOut + " > <a href=\"javascript:void(0)\" onclick=\"goBack('" + travelPath[i] + "');\">" + travelPath[i] + "</a>";
+        }
+        else {
+            strOut = strOut + " > " + (typeof(travelPath[i]) == "object" ?  travelPath[i].name : travelPath[i]);
+        }
+    }
+
+    return strOut.substring(3);
+}
+
+//the main draw function - handles enter, update and delete
 function drawChart(svg, data) {
     d3.select("#naviPath").html(travelPathToString());
 
@@ -189,7 +223,9 @@ function drawChart(svg, data) {
             .attr("font-weight", "normal");
         })
         .on('click', function(d){
-            redrawChart($("#drgSelect").children(':selected').val(), keyName == "providerName" ? {id: d.providerNationalID, name: d.providerName }  : d[keyName]);
+            if (travelPath.length < 4) {
+                redrawChart($("#drgSelect").children(':selected').val(), keyName == "providerName" ? {id: d.providerNationalID, name: d.providerName }  : d[keyName]);
+            }
         });
 
 	//update data
@@ -331,17 +367,4 @@ d3.selection.prototype.moveToFront = function() {
 
 function commaSeparateNumber(val){
   return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
-function goBack(){
-    console.log("hello");
-}
-
-function travelPathToString(){
-    var strOut = "";
-    for (var i = 0; i < travelPath.length; i++) {
-        strOut = strOut + " > <a href=\"javascript:void(0)\" onclick=\"goBack();\">" + (typeof(travelPath[i]) == "object" ?  travelPath[i].name : travelPath[i] ) + "</a>";
-    }
-
-    return strOut.substring(3);
 }
