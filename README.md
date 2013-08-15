@@ -8,5 +8,11 @@ things to do
 - dealing with provider drill down
 	- if individual drg is selected, you cannot drill down into a specific provider
 	- else, all drgs is selected, when you drill down into a specific provider, you cannot select a drg (disable the box)
-- what happens if you select a DRG that area does not have? AK disequalibrium - display error message "This state/city does not have data for the selected DRG"
 -info page needs calculation description, what the cost actually is (see data dictionary), an explanation of some of the DRG abbreviations
+
+usability 
+- communicate drilldownedness to initial viewers
+- evaluate use of drg and terminology
+- Tooltip with % actually paid by medicare
+- DRG product line grouping
+-bradenton fl, all drgs

@@ -71,6 +71,14 @@ select.drgSelect {
 }
 
 .footer p {
-	margin-top: 10px;
-	
+	margin-top: 10px;	
+}
+
+.strong{
+	font-weight: bold;
+	font-size: 14px;
+}
+
+p.strong{
+
 }

@@ -16,7 +16,7 @@ function loadData(){
 		dropDown.selectAll('option')
 		.data(csv).enter().append('option')
 		.attr("value", function(d){ return d.code;})
-		.text(function(d){return d.code + " - " + d.description;});
+		.text(function(d){return d.description + (d.code == "All" ? "" : " (" + d.code + ")");});
 	});
 
     //this can just be hardcoded, will always init at drg all 
@@ -65,9 +65,7 @@ function redrawChart(drgCode, travelLevel){
         travelPath.push(travelLevel);
     }
     
-	d3.csv(getFilePath(drgCode), function(error, csv){
-		d3.select("#chartMain").call(drawChart, csv);
-	});
+    callCSVHandleErrors(drgCode);
 }
 
 //goBack is ran with build ups to return to a previous path
@@ -80,8 +78,27 @@ function goBack(backLabel){
     var selectedIdx = travelPath.indexOf(backLabel);
     travelPath = travelPath.slice(0, selectedIdx+1);
 
+    callCSVHandleErrors(drgCode);
+}
+
+function callCSVHandleErrors(drgCode){
     d3.csv(getFilePath(drgCode), function(error, csv){
+        if (error !== null){ //if there was an error, instantiate the data as an empty set
+            csv = [];
+        }
+
         d3.select("#chartMain").call(drawChart, csv);
+        
+        if (csv.length === 0 || error !== null) { //if the CSV is empty or the file wasn't found, add an error message
+            d3.select("#chartMain").append("text")
+            .attr({
+                x: 0,
+                y: 20,
+                "fill" : chartSpec.label.color,
+                id: "noDRGData"
+            })
+            .text("This " + (travelPath.length == 2 ? "state" : "city") + " does not have data for that DRG.");
+        }
     });
 }
 
@@ -103,6 +120,8 @@ function travelPathToString(){
 
 //the main draw function - handles enter, update and delete
 function drawChart(svg, data) {
+    d3.select("#noDRGData").remove();
+
     d3.select("#naviPath").html(travelPathToString());
 
     svg.attr("height", (data.length * (barSpec.spacing + barSpec.h)) + chartSpec.insideOffset);
