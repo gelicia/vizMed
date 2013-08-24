@@ -270,6 +270,9 @@ function drawChart(svg, data) {
             tip.hide();
         })
         .on('click', function(d){
+            //remove all rect click events on click so a location from the same level isn't pushed to the travelPath 
+            d3.selectAll('rect.bar').on('click', null);
+
             if (travelPath.length < 4) {
                 redrawChart($("#drgSelect").children(':selected').val(), keyName == "providerName" ? {id: d.providerNationalID, name: d.providerName }  : d[keyName]);
             }
@@ -400,7 +403,7 @@ function drawChart(svg, data) {
     maxLineLabel.enter().append("text")
         .attr({
             x: chartStart,
-            y:  20,
+            y:  43,
             id: "maxLineLabel",
             'text-anchor' : "start"
         })
@@ -414,7 +417,7 @@ function drawChart(svg, data) {
             };
         })
         .attr({
-          x: function (d, i) {return chartStart + xScale(maxValue);}
+          x: function (d, i) {return chartStart + xScale(maxValue) + 5;}
         });
 }
 
