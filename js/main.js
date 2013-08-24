@@ -139,6 +139,7 @@ function travelPathToString(){
 
 //the main draw function - handles enter, update and delete
 function drawChart(svg, data) {
+    tip.hide(); //if the tip is showing, hide it
     svg.call(tip);
 
     d3.select("#noDRGData").remove();
@@ -255,6 +256,8 @@ function drawChart(svg, data) {
           d3.select("#lbl" + i)
             .attr("font-weight", "bold");
 
+          tip.offset([0, 10]);
+          tip.direction('e');
           tip.show('Average charge was $' + commaSeparateNumber(d.avgCoveredCharges) + '<br/>Average Medicare/patient payment was $' + commaSeparateNumber(d.averagePayments) + ' (' + Math.round((d.averagePayments / d.avgCoveredCharges) * 100)+ '%)');
         })
         .on('mouseout', function(d, i){

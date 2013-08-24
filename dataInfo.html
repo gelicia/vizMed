@@ -1,5 +1,38 @@
-data information
- Major Complications and Comorbid Conditions (MCC) 
-Severe complications, like organ failure, deadly disease or major injuries
 
- Complications and Comorbid Conditions(CC)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />   
+    <title>Visualizing Hospital Price Data</title> 
+
+  <!-- 
+  CSS and HTML Template by miss monorom http://www.intensivstation.ch
+  This work is licensed under a Creative Commons License http://creativecommons.org/licenses/by/1.0/
+  -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
+   <!-- <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css">-->
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="js/lib/jquery-2.0.3.min.js"></script>
+    <script src="js/lib/underscore-min.js"></script>
+    <script src="js/lib/d3.v3.min.js"></script>
+    <script src="js/lib/d3.tip.min.js"></script>
+    <script type = "text/javascript" src="js/main.js"></script>
+  </head> 
+
+  <body>
+   <h1>Visualizing Hospital Price Data - More Information</h1>
+    <div id="left"></div>
+    <div id="content">
+      <p><a href="./">Go back to the Visualization</a></p>
+      <h2>Medicare Info</h2>
+      <h2>Terminology</h2>
+      <p>The healthcare industry is full of terminology that is confusing if you're not used to it. To start with, <span style="font-weight:bold;">DRG stands for Diagnosis Related Group</span>, and classifies different reasons one might be in the hospital. </p>
+      <p>Within a DRG, you will see references to w (with) or w/o (without) CC or MCC. <span style="font-weight:bold;">CC stands for complication or comorbidity and MCC stands for major complication or comorbidity</span>. These are other factors like disease or injury that will have an impact on the primary diagnosis. The list of these is quite long, and is available <a href="http://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/downloads/cms-1533-p.pdf">here</a>. This document is over 1000 pages long, but a list of major complication and comorbiditys are available on pages 882-939 and the list of non-major complication and comorbiditys are on pages 940-1038.</p>
+      <h2>Calculation</h2>
+      <p>You may notice that the number indicating the average on the bar does not match the average for all the bars when you drill down. This is due to two different average calculations being used - one that factors in the number of people who recieved that diagnosis, and one that is an average of all the values on the screen.</p>
+      <p><span style="font-weight:bold;">The numbers in the bars and tooltips themselves</span> are averaged by summing the amount of money multiplied by the number of discharges a provider had for that diagnosis and dividing that by the number of discharges. This means that if a provider had one discharge that they wanted a lot of money for, it will only impact the average less because of the small number of people discharged.</p>
+      <p><span style="font-weight:bold;">The average value and yellow line that intersects all the bars</span> is just an average of whatever is on the screen. It's meant to show variability - the more bars are over or under that average line, the more variability there is in the data being displayed.</p>
+    </div>
+  </body>
+</html>
