@@ -25,14 +25,17 @@
     <div id="left"></div>
     <div id="content">
       <p><a href="./">Go back to the Visualization</a></p>
-      <h2>Medicare Info</h2>
       <h2>Terminology</h2>
-      <p>The healthcare industry is full of terminology that is confusing if you're not used to it. To start with, <span style="font-weight:bold;">DRG stands for Diagnosis Related Group</span>, and classifies different reasons one might be in the hospital. </p>
+      <p>The healthcare industry is full of terminology that is confusing if you're not used to it. To start with, <span style="font-weight:bold;">DRG stands for Diagnosis Related Group</span>, and classifies different reasons a patient needs medical care. </p>
       <p>Within a DRG, you will see references to w (with) or w/o (without) CC or MCC. <span style="font-weight:bold;">CC stands for complication or comorbidity and MCC stands for major complication or comorbidity</span>. These are other factors like disease or injury that will have an impact on the primary diagnosis. The list of these is quite long, and is available <a href="http://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/downloads/cms-1533-p.pdf">here</a>. This document is over 1000 pages long, but a list of major complication and comorbiditys are available on pages 882-939 and the list of non-major complication and comorbiditys are on pages 940-1038.</p>
+      <h2>Medicare Charge/Payment Info</h2>
+      <p>The numbers represented on the bars is the average charge this state/city/provider submitted to Medicare for the selected DRG or all DRGs. This is not how much they were paid by medicare and the patient- usually that's a lot less. Moving the pointer over the bar, you can see how much on average the state/city/provider recieved from medicare. The difference in this cost comes out of the provider's markup or overhead. One of the reasons private insurance rates are so high is to cover this loss.</p>
       <h2>Calculation</h2>
       <p>You may notice that the number indicating the average on the bar does not match the average for all the bars when you drill down. This is due to two different average calculations being used - one that factors in the number of people who recieved that diagnosis, and one that is an average of all the values on the screen.</p>
       <p><span style="font-weight:bold;">The numbers in the bars and tooltips themselves</span> are averaged by summing the amount of money multiplied by the number of discharges a provider had for that diagnosis and dividing that by the number of discharges. This means that if a provider had one discharge that they wanted a lot of money for, it will only impact the average less because of the small number of people discharged.</p>
       <p><span style="font-weight:bold;">The average value and yellow line that intersects all the bars</span> is just an average of whatever is on the screen. It's meant to show variability - the more bars are over or under that average line, the more variability there is in the data being displayed.</p>
+      <h2>Thanks</h2>
+      <p>Thanks to Dr. Lembcke and Heather Espersen (RN) for answering my questions about healthcare. Also thanks to Christophe Viau for the superhero like ability to translate vague descriptions into terminology, Scott for help with math and Matt Decuir, Alan Palazzolo and the Twin Cities Data Visualization group for advice and pep talks.</p>
     </div>
   </body>
 </html>

@@ -12,7 +12,7 @@ var tip = d3.tip()
 
 function loadData(){
 	//fill list of DRGs
-	d3.csv('./data/diagnoses.csv', function(error, csv){
+	d3.csv('./data/national/diagnoses.csv', function(error, csv){
 		var dropDown = d3.select('#drgSelect');
 
 		csv.unshift({code: "All", description: "All DRGs"});
