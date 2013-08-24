@@ -60,12 +60,24 @@ function getFilePath(drgCode){
 
 //redrawChart is ran with drill downs, the initial load, and drg changes.
 //it appends onto travelLevel and then goes to that level
+//If travelLevel is undefined, it is redrawing as a result of a drg change and not travelling
 function redrawChart(drgCode, travelLevel){
-    if (travelLevel !== undefined){
-        travelPath.push(travelLevel);
+    //make sure the travel is valid
+    if (travelLevel!== undefined && travelPath.length == 3 && $("#drgSelect").children(':selected').val() !== 'All'){
+        alert('You cannot get a provider\'s DRG data with a DRG selected. Please select All DRGs first.');
     }
-    
-    callCSVHandleErrors(drgCode);
+    else {
+        if (travelLevel !== undefined){
+            travelPath.push(travelLevel);
+        }
+
+        //if we're drilled down to the provider level, don't allow DRG choice
+        if (travelPath.length == 4){
+           $('#drgSelect').attr("disabled", "disabled");
+        }
+
+        callCSVHandleErrors(drgCode);
+    }
 }
 
 //goBack is ran with build ups to return to a previous path
@@ -77,6 +89,9 @@ function goBack(backLabel){
     //find the travel path level with the label, remove everything after it
     var selectedIdx = travelPath.indexOf(backLabel);
     travelPath = travelPath.slice(0, selectedIdx+1);
+
+    //if we're building up, the droplist shouldn't be disabled
+    $('#drgSelect').removeAttr("disabled");
 
     callCSVHandleErrors(drgCode);
 }
@@ -267,7 +282,7 @@ function drawChart(svg, data) {
           "text-anchor": "end",
           id : function(d,i){ return "vLbl" + i;},
           "fill" : '#000',
-          'opacity': 1,
+          'opacity': 0,
           x: chartStart,
           y: function (d, i) {return (barSpec.h/2) + (i * (barSpec.h + barSpec.spacing)) + 1;}
         }).text("$0");
@@ -294,7 +309,8 @@ function drawChart(svg, data) {
                 return chartStart + xScale(d.avgCoveredCharges) - 5;
             }
           },
-          y: function (d, i) {return (barSpec.h/2) + (i * (barSpec.h + barSpec.spacing)) + 1;}
+          y: function (d, i) {return (barSpec.h/2) + (i * (barSpec.h + barSpec.spacing)) + 1;},
+          opacity: 1
         });
 
     //avgLine add and update
@@ -373,7 +389,7 @@ function drawChart(svg, data) {
             x: chartStart,
             y:  20,
             id: "maxLineLabel",
-            'text-anchor' : "middle"
+            'text-anchor' : "start"
         })
         .text("$0");
 
