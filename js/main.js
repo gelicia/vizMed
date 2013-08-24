@@ -6,6 +6,10 @@ var transitionSpeed = 500;
 
 var travelPath = ["National"];
 
+var tip = d3.tip()
+  .attr('class', 'd3-tip')
+  .html(function(d) { return d; });
+
 function loadData(){
 	//fill list of DRGs
 	d3.csv('./data/diagnoses.csv', function(error, csv){
@@ -135,6 +139,8 @@ function travelPathToString(){
 
 //the main draw function - handles enter, update and delete
 function drawChart(svg, data) {
+    svg.call(tip);
+
     d3.select("#noDRGData").remove();
 
     d3.select("#naviPath").html(travelPathToString());
@@ -248,6 +254,8 @@ function drawChart(svg, data) {
 
           d3.select("#lbl" + i)
             .attr("font-weight", "bold");
+
+          tip.show('Average charge was $' + commaSeparateNumber(d.avgCoveredCharges) + '<br/>Average Medicare/patient payment was $' + commaSeparateNumber(d.averagePayments) + ' (' + Math.round((d.averagePayments / d.avgCoveredCharges) * 100)+ '%)');
         })
         .on('mouseout', function(d, i){
           d3.select(this)
@@ -255,6 +263,8 @@ function drawChart(svg, data) {
 
            d3.select("#lbl" + i)
             .attr("font-weight", "normal");
+
+            tip.hide();
         })
         .on('click', function(d){
             if (travelPath.length < 4) {

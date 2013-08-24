@@ -7,7 +7,6 @@ things to do
 -info page needs calculation description, what the cost actually is (see data dictionary), an explanation of some of the DRG abbreviations
 
 usability 
-- Tooltip with % actually paid by medicare
 - DRG product line grouping
 
 -bradenton fl, all drgs

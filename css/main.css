@@ -79,6 +79,11 @@ select.drgSelect {
 	font-size: 14px;
 }
 
-p.strong{
-
-}
+.d3-tip {
+    font-size: 12px;
+    padding: 9px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 2px;
+    text-align: center;
+  }
