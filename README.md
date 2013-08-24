@@ -9,3 +9,4 @@ Uses d3.js, d3.tip and jquery
 Maybe someday do list
 -I'd love to have this so you could select bars and compare across drill down levels
 -I had a really great transition series I discarded, maybe do that. Mostly I dislike how the changes of scale aren't displayed.
+-I realized too late that the number of discharges was an interesting number that I should have included. This does mean changing too many files and rerunning too many calculations for me to do it in time for the deadline, but I should display that somewhere
