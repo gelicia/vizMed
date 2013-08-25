@@ -216,7 +216,6 @@ function drawChart(svg, data) {
           "font-size": chartSpec.label.size,
           "dominant-baseline": "central",
           "text-anchor": "end",
-          id : function(d,i){ return "lbl" + i;},
           "fill" : chartSpec.label.color,
           opacity: 0
         })
@@ -247,25 +246,32 @@ function drawChart(svg, data) {
 			y: function(d,i){ return i*(barSpec.h + barSpec.spacing); },
 			width: 0,
 			height : barSpec.h,
-			fill: barSpec.fill
+			fill: barSpec.fill,
+            value: function(d){ return d[keyName];}
 		})        
         .on('mouseover', function(d, i){
-          d3.select(this)
+          //save this scope
+          var rectThis = this;
+
+          d3.select(rectThis)
             .attr("fill", barSpec.moFill);
 
-          d3.select("#lbl" + i)
-            .attr("font-weight", "bold");
+         //get the value out of the rectangle's attribute and match it with a label with the same text
+          d3.selectAll(".barLabel").filter(function(d){return this.textContent == rectThis.getAttribute("value");})
+           .attr("font-weight", "bold");
 
           tip.offset([0, 10]);
           tip.direction('e');
           tip.show('Average charge was $' + commaSeparateNumber(d.avgCoveredCharges) + '<br/>Average Medicare/patient payment was $' + commaSeparateNumber(d.averagePayments) + ' (' + Math.round((d.averagePayments / d.avgCoveredCharges) * 100)+ '%)');
         })
         .on('mouseout', function(d, i){
-          d3.select(this)
+          var rectThis = this;
+
+          d3.select(rectThis)
             .attr("fill", barSpec.fill);
 
-           d3.select("#lbl" + i)
-            .attr("font-weight", "normal");
+          d3.selectAll(".barLabel").filter(function(d){return this.textContent == rectThis.getAttribute("value");})
+           .attr("font-weight", "normal");
 
             tip.hide();
         })
